@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useRef, useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface MenuItem {
     ITEM_ID: number
@@ -80,167 +81,57 @@ export const CategorizedMenu: React.FC<CategorizedMenuProps> = ({
         return cartItems.find(i => Number(i.id) === Number(itemId))
     }
 
+    const allItems = categories.flatMap(category => category.ITEMS || [])
+
     return (
-        <div className="categorized-menu">
-            {/* Sticky Category Nav */}
+        <div className="categorized-menu" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px' }}>
             <div style={{
-                position: 'sticky',
-                top: '0',
-                background: '#fff',
-                zIndex: 10,
-                borderBottom: '1px solid #eee',
-                padding: '12px 0',
-                overflowX: 'auto',
-                whiteSpace: 'nowrap',
-                scrollbarWidth: 'none', // Firefox
-                msOverflowStyle: 'none', // IE/Edge
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
+                gap: '20px'
             }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', display: 'flex', gap: '20px' }}>
-                    {categories.map(cat => (
-                        <button
-                            key={cat.CAT_ID}
-                            onClick={() => scrollToCategory(cat.CAT_ID)}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                padding: '8px 4px',
-                                fontSize: '14px',
-                                fontWeight: activeCategory === cat.CAT_ID ? '700' : '500',
-                                color: activeCategory === cat.CAT_ID ? '#000' : '#666',
-                                borderBottom: activeCategory === cat.CAT_ID ? '2px solid #000' : '2px solid transparent',
-                                cursor: 'pointer',
-                                transition: 'all 0.2s ease'
-                            }}
-                        >
-                            {cat.CAT_NAME}
-                        </button>
-                    ))}
-                </div>
-            </div>
+                {allItems.map(item => {
+                            const cartItem = getCartItem(item.ITEM_ID)
+                            const imageUrl = item.ITEM_PHOTO_PATH?.[0] ? `${IMAGE_BASE_URL}${item.ITEM_PHOTO_PATH[0]}` : 'https://via.placeholder.com/560x560?text=Product'
+                            return (
+                                <div
+                                    key={item.ITEM_ID}
+                                    style={{
+                                        border: '1px solid #E5E7EB',
+                                        borderRadius: '0',
+                                        overflow: 'hidden',
+                                        background: '#fff',
+                                        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        minHeight: '420px'
+                                    }}
+                                    className="item-card"
+                                >
+                                    <a href={`/menu/${item.ITEM_ID}`} style={{ display: 'block', overflow: 'hidden', flex: 1 }}>
+                                        <img
+                                            src={imageUrl}
+                                            alt={item.ITEM_NAME}
+                                            style={{ width: '100%', height: '300px', objectFit: 'cover', transition: 'transform 0.3s ease' }}
+                                            onError={(e) => {
+                                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/560x560?text=No+Image'
+                                            }}
+                                            onMouseOver={(e) => { (e.target as HTMLImageElement).style.transform = 'scale(1.05)' }}
+                                            onMouseOut={(e) => { (e.target as HTMLImageElement).style.transform = 'scale(1)' }}
+                                        />
+                                    </a>
 
-            {/* Menu Items */}
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
-                {categories.map(category => (
-                    <div
-                        key={category.CAT_ID}
-                        ref={el => { categoryRefs.current[category.CAT_ID] = el }}
-                        style={{ marginBottom: '48px' }}
-                    >
-                        <h2 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            {category.CAT_NAME}
-                            <span style={{ fontSize: '13px', color: '#999', fontWeight: '400' }}>({category.ITEMS.length})</span>
-                        </h2>
-
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                            gap: '24px'
-                        }}>
-                            {category.ITEMS.map(item => {
-                                const cartItem = getCartItem(item.ITEM_ID)
-                                return (
-                                    <div
-                                        key={item.ITEM_ID}
-                                        style={{
-                                            border: '1px solid #f0f0f0',
-                                            borderRadius: '12px',
-                                            overflow: 'hidden',
-                                            background: '#fff',
-                                            transition: 'box-shadow 0.2s ease',
-                                            display: 'flex',
-                                            flexDirection: 'column'
-                                        }}
-                                        className="item-card"
-                                    >
-                                        <div style={{ height: '200px', position: 'relative', overflow: 'hidden' }}>
-                                            {item.ITEM_PHOTO_PATH && item.ITEM_PHOTO_PATH.length > 0 ? (
-                                                <img
-                                                    src={`${IMAGE_BASE_URL}${item.ITEM_PHOTO_PATH[0]}`}
-                                                    alt={item.ITEM_NAME}
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                    onError={(e) => {
-                                                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=Food'
-                                                    }}
-                                                />
-                                            ) : (
-                                                <div style={{ width: '100%', height: '100%', background: '#f9f9f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <span style={{ fontSize: '32px' }}>🍽️</span>
-                                                </div>
-                                            )}
-                                            {item.TAG_NAME && (
-                                                <div style={{
-                                                    position: 'absolute',
-                                                    top: '12px',
-                                                    left: '12px',
-                                                    background: item.TAG_COLOUR || '#333',
-                                                    color: '#fff',
-                                                    padding: '4px 10px',
-                                                    borderRadius: '4px',
-                                                    fontSize: '10px',
-                                                    fontWeight: '800',
-                                                    textTransform: 'uppercase',
-                                                    letterSpacing: '0.05em'
-                                                }}>
-                                                    {item.TAG_NAME}
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                                            <h3 style={{ fontSize: '16px', fontWeight: '700', margin: '0 0 4px 0' }}>{item.ITEM_NAME}</h3>
-                                            <p style={{ fontSize: '13px', color: '#666', margin: '0 0 16px 0', lineHeight: '1.4', flex: 1 }}>
-                                                {item.ITEM_DESC}
-                                            </p>
-
-                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-                                                <span style={{ fontSize: '18px', fontWeight: '800' }}>₹{item.ITEM_PRICE}</span>
-
-                                                {cartItem ? (
-                                                    <div style={{ display: 'flex', alignItems: 'center', background: '#FFD814', borderRadius: '20px', padding: '4px 12px', gap: '12px', boxShadow: '0 2px 5px rgba(213,217,217,.5)' }}>
-                                                        <button
-                                                            onClick={() => onUpdateQuantity(item.ITEM_ID, cartItem.quantity - 1)}
-                                                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', fontWeight: '800', color: '#0F1111', padding: '0 4px' }}
-                                                        >
-                                                            -
-                                                        </button>
-                                                        <span style={{ fontSize: '14px', fontWeight: '800', minWidth: '20px', textAlign: 'center' }}>
-                                                            {cartItem.quantity}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => onUpdateQuantity(item.ITEM_ID, cartItem.quantity + 1)}
-                                                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px', fontWeight: '800', color: '#0F1111', padding: '0 4px' }}
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <button
-                                                        onClick={() => onAddItem(item)}
-                                                        style={{
-                                                            background: '#FFD814',
-                                                            border: '1px solid #FCD200',
-                                                            color: '#0F1111',
-                                                            padding: '8px 24px',
-                                                            borderRadius: '20px',
-                                                            fontSize: '13px',
-                                                            fontWeight: '600',
-                                                            cursor: 'pointer',
-                                                            boxShadow: '0 2px 5px rgba(213,217,217,.5)'
-                                                        }}
-                                                    >
-                                                        Add to Cart
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
+                                    <div style={{ padding: '16px', display:'flex', flexDirection:'column', gap:'8px', textAlign: 'center' }}>
+                                        <a href={`/menu/${item.ITEM_ID}`} style={{ textDecoration: 'none', color: '#111827' }}>
+                                            <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, lineHeight: 1.3, minHeight:'46px' }}>{item.ITEM_NAME}</h3>
+                                        </a>
+                                        <p style={{ fontSize: '18px', fontWeight: 400, color: '#111827', margin: '0' }}>₹{item.ITEM_PRICE}</p>
                                     </div>
-                                )
-                            })}
-                        </div>
-                    </div>
-                ))}
+                                </div>
+                            )
+                        })}
             </div>
-
         </div>
     )
 }

@@ -50,9 +50,10 @@ export default function MenuPage() {
                     }),
                 })
 
-                // Run Merchant and Menu calls in parallel
-                const [merchRes, menuRes] = await Promise.all([
-                    fetch('/api/menu-proxy', {
+                // First fetch merchant to get MERCH_ID
+                let merchId = 1 // default
+                try {
+                    const merchRes = await fetch('/api/menu-proxy', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -60,33 +61,55 @@ export default function MenuPage() {
                             action: "getMerchantByUniqueCred",
                             MERCH_UNIQUE_URL: "xyz.com"
                         }),
-                    }),
-                    fetch('/api/menu-proxy', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            workflow: "menu",
-                            action: "getMenuCustomer",
-                            MERCH_ID: 1 // Starting with default ID for speed
-                        }),
                     })
-                ])
+                    const merchData = await merchRes.json()
+                    console.log("DEBUG: Merchant Response:", merchData);
 
-                const merchData = await merchRes.json()
-                const menuData = await menuRes.json()
-                console.log("DEBUG: Merchant Response:", merchData);
-                console.log("DEBUG: Menu Response:", menuData);
-
-                if (merchData.DATA) {
-                    setMerchant(merchData.DATA)
-                    // Skip redundant availability check as per user request
+                    if (merchData.DATA) {
+                        setMerchant(merchData.DATA)
+                        merchId = merchData.DATA.MERCH_ID
+                        // Skip redundant availability check as per user request
+                        setIsServiceable(true)
+                    } else {
+                        throw new Error('No merchant data returned')
+                    }
+                } catch (merchErr) {
+                    console.warn("Merchant fetch failed, using defaults:", merchErr)
+                    // Fallback merchant object if API fails
+                    const fallbackMerchant = {
+                        MERCH_ID: 1,
+                        MERCH_NAME: 'Desi Handmade',
+                        MERCH_DESCRIPTION: 'Desi Handmade Products',
+                        PLATFORM_ID: 1
+                    }
+                    setMerchant(fallbackMerchant)
                     setIsServiceable(true)
+                    // Continue with default merchId = 1
                 }
+
+                // Then fetch menu with the correct MERCH_ID
+                const menuRes = await fetch('/api/menu-proxy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        workflow: "menu",
+                        action: "getMenuCustomer",
+                        MERCH_ID: merchId
+                    }),
+                })
+                const menuData = await menuRes.json()
+                console.log("DEBUG: Menu Response:", menuData);
 
                 if (menuData.DATA?.ITEMS) {
                     setCategories(menuData.DATA.ITEMS)
                 } else {
-                    throw new Error(`Menu data unavailable: ${menuData.STATUS_MESSAGE || 'Unknown error'}`)
+                    const infoMessage =
+                        menuData.STATUS_MESSAGE ||
+                        menuData.message ||
+                        menuData.error ||
+                        (menuData.details && menuData.details.STATUS_MESSAGE) ||
+                        'Unknown error'
+                    throw new Error(`Menu data unavailable: ${infoMessage}`)
                 }
 
             } catch (err) {
@@ -300,7 +323,37 @@ export default function MenuPage() {
         <div style={{ minHeight: '100vh', background: '#fcfcfc', fontFamily: 'Inter, sans-serif' }}>
             {merchant && (
                 <>
-                    <MerchantHeader merchant={merchant} />
+                    {/* MerchantHeader removed per request */}
+                    <section style={{ background: '#fff', padding: '52px 24px 28px' }}>
+                        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+                            <p style={{ margin: '60px 0 0 0', fontSize: '14px', color: '#A16207', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                                Apparels & Accessories
+                            </p>
+                            <h1 style={{ margin: '20px auto 0 auto', fontSize: '3.4rem', fontWeight: 500, color: '#111827', lineHeight: 1.08, maxWidth: '860px' }}>
+                                Women Apparels
+                            </h1>
+
+                            {/* <div style={{ height: '20px' }} /> */}
+
+                            <div style={{ marginTop: '100px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
+                                <span style={{ color: '#4B5563', fontSize: '14px' }}>
+                                    Showing {categories.reduce((sum, c) => sum + (c.ITEMS?.length || 0), 0)} results
+                                </span>
+
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'flex-end' }}>
+                                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #D1D5DB', background: 'transparent', borderRadius: '8px', padding: '7px 12px', color: '#374151', cursor: 'pointer', fontWeight: 600 }}>
+                                        <span style={{ fontSize: '14px' }}>⇅</span>
+                                        Sort by
+                                    </button>
+                                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #9CA3AF', background: 'transparent', borderRadius: '8px', padding: '7px 12px', color: '#374151', cursor: 'pointer', fontWeight: 600 }}>
+                                        <span style={{ fontSize: '14px' }}>≡</span>
+                                        Filter by
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     {!isServiceable && (
                         <div style={{ background: '#FFF5F5', color: '#C53030', padding: '12px', textAlign: 'center', fontSize: '14px', fontWeight: '700', borderBottom: '1px solid #FED7D7' }}>
                             ⚠️ Delivery is currently unavailable in your location. You can still browse and pre-book.
@@ -339,7 +392,7 @@ export default function MenuPage() {
                         background: '#0F1111',
                         color: '#fff',
                         padding: '16px 32px',
-                        borderRadius: '30px',
+                        borderRadius: '0',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '16px',

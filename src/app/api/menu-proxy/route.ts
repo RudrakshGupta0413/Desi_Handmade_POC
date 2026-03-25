@@ -7,7 +7,8 @@ export async function POST(request: Request) {
 
         // Default to /opn if no endpoint specified (for backward compatibility)
         const targetPath = endpoint ? endpoint : '/opn'
-        const url = `http://localhost:4000${targetPath}`
+        const baseUrl = process.env.MISRUT_API_URL || 'http://localhost:4000'
+        const url = `${baseUrl}${targetPath}`
 
         console.log(`Proxying request to: ${url}`)
 
@@ -20,23 +21,25 @@ export async function POST(request: Request) {
         })
 
         if (!response.ok) {
-            const errorData = await response.text()
-            console.error('API Proxy Error:', errorData)
-            // Attempt to parse JSON error if possible
+            let errorData: any
             try {
-                const parsedError = JSON.parse(errorData)
-                return NextResponse.json({
-                    error: 'External API Error',
-                    details: parsedError,
-                    status: response.status
-                }, { status: 200 }) // Return 200 so frontend can show the message
+                errorData = await response.json()
             } catch {
+                errorData = await response.text()
+            }
+
+            console.error('API Proxy Error:', errorData)
+
+            // Forward actual API error body (or text) so frontend sees real error details
+            if (typeof errorData === 'string') {
                 return NextResponse.json({
                     error: 'External API Error',
                     message: errorData,
                     status: response.status
                 }, { status: 200 })
             }
+
+            return NextResponse.json(errorData, { status: 200 })
         }
 
         const responseData = await response.json()
