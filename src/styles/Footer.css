@@ -35,7 +35,7 @@
   margin: 0 auto;
   padding: 60px 60px 50px;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
   gap: 40px;
 }
 
@@ -56,12 +56,12 @@
 }
 
 .footer-tagline {
-  font-family: 'Times New Roman', Georgia, serif;
-  font-size: 1.05rem;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
   color: #1a1a1a;
   line-height: 1.5;
   max-width: 260px;
-  font-weight: 400;
 }
 
 /* Link columns */
@@ -72,17 +72,20 @@
 }
 
 .footer-column-title {
+  font-family: 'FONTSPRING DEMO - The Seasons', serif;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: #1a1a1a;
+  color: #B78E59;
   margin-bottom: 6px;
 }
 
 .footer-link {
+  font-family: 'FONTSPRING DEMO - The Seasons', serif;
   font-size: 0.85rem;
-  color: #555;
+  color: #6F6E6C;
+  font-weight: 400;
   text-decoration: none;
   line-height: 1.7;
   transition: color 0.2s ease;
