@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useCart } from '@/components/CartContext'
 import { MerchantHeader } from '@/components/MerchantHeader'
 import { CategorizedMenu } from '@/components/CategorizedMenu'
@@ -8,7 +9,9 @@ import { PhonePrompt } from '@/components/PhonePrompt'
 import { MultiStepCheckout } from '@/components/MultiStepCheckout'
 
 export default function MenuPage() {
+    const router = useRouter()
     const {
+
         cartItems,
         addToCart,
         updateQuantity,
@@ -326,29 +329,33 @@ export default function MenuPage() {
                     {/* MerchantHeader removed per request */}
                     <section style={{ background: '#fff', padding: '52px 24px 28px' }}>
                         <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-                            <p style={{ margin: '60px 0 0 0', fontSize: '14px', color: '#A16207', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                            <p style={{ margin: '60px 0 0 0', fontSize: '1.2rem', color: '#A16207', textTransform: 'uppercase', letterSpacing: '0.12em', fontFamily: "'Baskerville Old Face', 'Baskerville', serif" }}>
                                 Apparels & Accessories
                             </p>
-                            <h1 style={{ margin: '20px auto 0 auto', fontSize: '3.4rem', fontWeight: 500, color: '#111827', lineHeight: 1.08, maxWidth: '860px' }}>
+
+                            <h1 style={{ margin: '20px auto 0 auto', fontSize: '3.6rem', fontWeight: 500, color: '#111827', lineHeight: 1.08, maxWidth: '860px', fontFamily: "'Baskerville Old Face', 'Baskerville', serif" }}>
                                 Women Apparels
                             </h1>
+
 
                             {/* <div style={{ height: '20px' }} /> */}
 
                             <div style={{ marginTop: '100px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-                                <span style={{ color: '#4B5563', fontSize: '14px' }}>
+                                <span style={{ color: '#4B5563', fontSize: '18px', fontFamily: "'Baskerville Old Face', 'Baskerville', serif" }}>
                                     Showing {categories.reduce((sum, c) => sum + (c.ITEMS?.length || 0), 0)} results
                                 </span>
 
+
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'flex-end' }}>
-                                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #D1D5DB', background: 'transparent', borderRadius: '8px', padding: '7px 12px', color: '#374151', cursor: 'pointer', fontWeight: 600 }}>
-                                        <span style={{ fontSize: '14px' }}>⇅</span>
+                                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #D1D5DB', background: 'transparent', borderRadius: '8px', padding: '7px 12px', color: '#374151', cursor: 'pointer', fontWeight: 600, fontFamily: "'Baskerville Old Face', 'Baskerville', serif" }}>
+                                        <span style={{ fontSize: '18px' }}>⇅</span>
                                         Sort by
                                     </button>
-                                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #9CA3AF', background: 'transparent', borderRadius: '8px', padding: '7px 12px', color: '#374151', cursor: 'pointer', fontWeight: 600 }}>
-                                        <span style={{ fontSize: '14px' }}>≡</span>
+                                    <button style={{ display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid #9CA3AF', background: 'transparent', borderRadius: '8px', padding: '7px 12px', color: '#374151', cursor: 'pointer', fontWeight: 600, fontFamily: "'Baskerville Old Face', 'Baskerville', serif" }}>
+                                        <span style={{ fontSize: '18px' }}>≡</span>
                                         Filter by
                                     </button>
+
                                 </div>
                             </div>
                         </div>
@@ -383,7 +390,8 @@ export default function MenuPage() {
             {/* Floating Cart (Amazon themed) */}
             {itemCount > 0 && (
                 <div
-                    onClick={() => setIsCartOpen(true)}
+                    onClick={() => router.push('/cart')}
+
                     style={{
                         position: 'fixed',
                         bottom: '24px',

@@ -1,0 +1,234 @@
+.product-detail-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 90px;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.product-main-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    padding: 40px 20px;
+    align-items: center;
+}
+
+
+.product-image-container {
+    width: 100%;
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    background-color: #f9f9f9;
+}
+
+.product-info-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.product-category {
+    font-size: 16px;
+    color: #B78E59;
+    font-weight: 700;
+    text-transform: capitalize;
+    padding-top: 10px;
+    margin-bottom: -5px;
+}
+
+
+.product-title {
+    font-family: 'Times New Roman', serif;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.2;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.product-price {
+    font-size: 24px;
+    font-weight: 400;
+    margin: 10px 0 0 0;
+    color: #686363;
+}
+
+.product-tax-info {
+    font-size: 13px;
+    color: #686363;
+    margin-top: -5px;
+    margin-bottom: 20px;
+}
+
+
+.size-selection-container {
+    margin-bottom: 30px;
+}
+
+.size-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.size-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #1E1E1E;
+}
+
+.size-guide-link {
+    font-size: 13px;
+    color: #1E1E1E;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.size-grid {
+    display: flex;
+    gap: 12px;
+}
+
+.size-button {
+    width: 70px;
+    height: 45px;
+    border: 1px solid #FFE7C7;
+    background: #FFE7C7;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #852221;
+}
+
+.size-button:hover {
+    border-color: #333;
+}
+
+.size-button.active {
+    background: #852221;
+    color: #FFE7C7;
+    border-color: #852221;
+}
+
+.add-to-bag-button {
+    width: 100%;
+    padding: 18px;
+    background: #7a1f1f;
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 50px;
+}
+
+.add-to-bag-button:hover {
+    background: #5a1717;
+}
+
+/* Collapsible Sections */
+.details-section {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    border-top: 1px solid #eee;
+    padding-top: 40px;
+    margin-bottom: 80px;
+}
+
+.accordion-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-item {
+    border-bottom: 1px solid #eee;
+}
+
+.accordion-header {
+    padding: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #925200;
+}
+
+.accordion-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+    padding: 0;
+    font-weight: 400;
+}
+
+.accordion-item.open .accordion-content {
+    max-height: 1000px;
+    padding-bottom: 20px;
+}
+
+
+.accordion-icon {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+
+.accordion-item.open .accordion-icon {
+    transform: rotate(180deg);
+}
+
+/* Note Card */
+.note-card {
+    background-color: #fffaf5;
+    padding: 30px;
+    border-radius: 4px;
+}
+
+.note-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.note-content {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #555;
+}
+
+@media (max-width: 992px) {
+    .product-main-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .details-section {
+        grid-template-columns: 1fr;
+    }
+}

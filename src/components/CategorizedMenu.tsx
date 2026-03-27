@@ -90,23 +90,32 @@ export const CategorizedMenu: React.FC<CategorizedMenuProps> = ({
                 gridTemplateColumns: 'repeat(auto-fit,minmax(250px,1fr))',
                 gap: '20px'
             }}>
-                {allItems.map(item => {
+                {allItems.map((item, index) => {
                             const cartItem = getCartItem(item.ITEM_ID)
-                            const imageUrl = item.ITEM_PHOTO_PATH?.[0] ? `${IMAGE_BASE_URL}${item.ITEM_PHOTO_PATH[0]}` : 'https://via.placeholder.com/560x560?text=Product'
+                            let imageUrl = item.ITEM_PHOTO_PATH?.[0] ? `${IMAGE_BASE_URL}${item.ITEM_PHOTO_PATH[0]}` : 'https://via.placeholder.com/560x560?text=Product'
+                            
+                            // Temporary dummy image for the first product card
+                            if (index === 0) {
+                                imageUrl = '/dummy_product.jpg'
+                            }
+
                             return (
+
                                 <div
                                     key={item.ITEM_ID}
                                     style={{
-                                        border: '1px solid #E5E7EB',
-                                        borderRadius: '0',
+                                        border: '1px solid #DED2C9',
+                                        borderRadius: '4px',
                                         overflow: 'hidden',
                                         background: '#fff',
-                                        transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                                        transition: 'all 0.3s ease',
                                         cursor: 'pointer',
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        minHeight: '420px'
+                                        minHeight: '400px'
                                     }}
+
+
                                     className="item-card"
                                 >
                                     <a href={`/menu/${item.ITEM_ID}`} style={{ display: 'block', overflow: 'hidden', flex: 1 }}>
@@ -122,12 +131,13 @@ export const CategorizedMenu: React.FC<CategorizedMenuProps> = ({
                                         />
                                     </a>
 
-                                    <div style={{ padding: '16px', display:'flex', flexDirection:'column', gap:'8px', textAlign: 'center' }}>
-                                        <a href={`/menu/${item.ITEM_ID}`} style={{ textDecoration: 'none', color: '#111827' }}>
-                                            <h3 style={{ fontSize: '16px', fontWeight: 700, margin: 0, lineHeight: 1.3, minHeight:'46px' }}>{item.ITEM_NAME}</h3>
+                                    <div style={{ padding: '20px 10px', display:'flex', flexDirection:'column', gap:'10px', textAlign: 'center' }}>
+                                        <a href={`/menu/${item.ITEM_ID}`} style={{ textDecoration: 'none', color: '#1a1a1a' }}>
+                                            <h3 style={{ fontSize: '15px', fontWeight: 600, margin: 0, lineHeight: 1.4, fontFamily: "'Inter', sans-serif" }}>{item.ITEM_NAME}</h3>
                                         </a>
-                                        <p style={{ fontSize: '18px', fontWeight: 400, color: '#111827', margin: '0' }}>₹{item.ITEM_PRICE}</p>
+                                        <p style={{ fontSize: '15px', fontWeight: 500, color: '#777', margin: '0', fontFamily: "'Inter', sans-serif" }}>₹{item.ITEM_PRICE.toLocaleString()}</p>
                                     </div>
+
                                 </div>
                             )
                         })}
